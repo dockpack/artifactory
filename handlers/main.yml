@@ -1,0 +1,11 @@
+---
+# handlers file for bbaassssiiee.artifactory
+- name: 'start artifactory'
+  sudo: yes
+  service: name=artifactory state=started
+  tags:
+    - init
+
+- name: 'restart artifactory'
+  sudo: yes
+  service: name=artifactory state=restarted

@@ -1,0 +1,102 @@
+---
+# tasks file for bbaassssiiee.artifactory
+
+- name: 'make sure rpm_dependencies are installed'
+  yum: name={{item}} state=installed
+  when: ansible_os_family == "RedHat"
+  register: installed
+  retries: 3
+  with_items: rpm_dependencies
+  
+# download artifactory http://bit.ly/Hqv9aj
+- name: 'make sure directory exists for artifactory'
+  file: dest=/opt/artifactory state=directory mode=0755
+  
+- name: 'verify presence of artifactory'
+  stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"
+  register: jarfile
+
+- name: 'verify presence of artifactory_file'
+  stat: path=/tmp/{{artifactory_file}}
+  register: download
+
+- name: 'download artifactory'
+  get_url: url={{artifactory_url}} dest=/tmp/{{artifactory_file}}
+  retries: 3
+  when: not download.stat.exists
+
+- name: 'unzip artifactory'
+  command: unzip -o  /tmp/{{artifactory_file}} -d /opt/artifactory
+  when: not jarfile.stat.exists
+
+#- name: 'verify presence of artifactory download'
+#  stat: path=/tmp/{{artifactory_file}}
+#  register: artifactory_download
+
+#- name: 'cleanup artifactory download'
+#  file: dest=/tmp/{{artifactory_file}} state=absent
+#  when: artifactory_download.stat.exists
+
+- name: 'create artifactory database'
+  postgresql_db: name=artdb template='template0' encoding='UTF-8'
+  when: features.postgresql
+
+- name: 'create artifactory database user'
+  postgresql_user: db=artdb name='{{artifactory_username}}' password='{{artifactory_password}}'
+  when: features.postgresql
+
+- name: 'download jdbc connector for postgres'
+  get_url: url={{postgres_jdbc_url}} dest={{artifactory_home}}/tomcat/lib
+  register: jdbc_installed
+  when: features.postgresql
+
+- name: 'verify presence of jdbc connector for mysql'
+  stat: path={{artifactory_home}}/tomcat/lib/{{mysql_jdbc_base}}-bin.jar
+  register: jdbc_installed
+  when: features.mysql
+  
+- name: 'download jdbc connector for mysql'
+  get_url: url={{mysql_jdbc_url}} dest=/tmp
+  when: features.mysql
+  retries: 3
+#  when: features.mysql and not ant_installed.stat.exists
+  
+- name: 'untar jdbc connector for mysql'
+  command: tar xfvz /tmp/{{mysql_jdbc_base}}.tar.gz -C /tmp
+  when: features.mysql 
+
+- name: 'enable  jdbc connector for mysql'
+  command: mv /tmp/{{mysql_jdbc_base}}/{{mysql_jdbc_base}}-bin.jar {{artifactory_home}}/tomcat/lib
+  when: features.mysql 
+
+- name: 'create artifactory database'
+  mysql_db: name=artdb state=present 
+  when: features.mysql
+
+- name: 'create artifactory database user'
+  mysql_user: name={{ artifactory_username }} priv=artdb.*:ALL
+    password={{ artifactory_password }} 
+  when: features.mysql
+
+- name: 'create user to run artifactory'
+  user: name={{artifactory_username}}
+  
+- name: 'create config dir for artifactory'
+  file: dest=/etc/opt/jfrog/artifactory state=directory owner=root mode=0755
+
+- name: 'create configuration file'
+  template: src=etc-opt-jfrog-artifactory-default.j2 dest=/etc/opt/jfrog/artifactory/default
+                owner=root group=root mode=0644
+
+- name: 'enable postgresql driver'
+  template: src=storage_postgresql.j2 dest={{artifactory_home}}/etc/storage.properties owner=root group=root mode=0644
+  when: features.postgresql
+
+- name: 'enable mysql driver'
+  template: src=storage_mysql.j2 dest={{artifactory_home}}/etc/storage.properties owner=root group=root mode=0644
+  when: features.mysql
+
+- name: 'install artifactory as a service'
+  command: "{{artifactory_home}}/bin/installService.sh {{artifactory_username}} creates=/etc/init.d/artifactory"
+  notify:
+    - 'restart artifactory'

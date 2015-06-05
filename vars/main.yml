@@ -2,6 +2,15 @@
 # vars file for bbaassssiiee.artifactory
 artifactory_version: "3.4.2"
 
+rpm_dependencies:
+  - 'java-1.7.0-openjdk'
+  - 'java-1.7.0-openjdk-devel'
+  - 'MySQL-python'
+
+features:
+  mysql: True
+  postgresql: False
+  
 artifactory_url: "https://bintray.com/artifact/download/jfrog/artifactory/artifactory-{{artifactory_version}}.zip"
 artifactory_file: "artifactory-{{artifactory_version}}.zip"
 artifactory_home: "/opt/artifactory/artifactory-{{artifactory_version}}"

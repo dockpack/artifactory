@@ -6,9 +6,3 @@ artifactory_password: "password"
 features:
   mysql: True
   postgresql: False
-
-rpm_dependencies:
-  - 'java-1.7.0-openjdk'
-  - 'java-1.7.0-openjdk-devel'
-  - 'MySQL-python'
-

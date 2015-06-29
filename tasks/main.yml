@@ -7,11 +7,11 @@
   register: installed
   retries: 3
   with_items: rpm_dependencies
-  
+
 # download artifactory http://bit.ly/Hqv9aj
 - name: 'make sure directory exists for artifactory'
   file: dest=/opt/artifactory state=directory mode=0755
-  
+
 - name: 'verify presence of artifactory'
   stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"
   register: jarfile
@@ -54,33 +54,37 @@
   stat: path={{artifactory_home}}/tomcat/lib/{{mysql_jdbc_base}}-bin.jar
   register: jdbc_installed
   when: features.mysql
-  
+
 - name: 'download jdbc connector for mysql'
   get_url: url={{mysql_jdbc_url}} dest=/tmp
   when: features.mysql
   retries: 3
 #  when: features.mysql and not ant_installed.stat.exists
-  
+
 - name: 'untar jdbc connector for mysql'
   command: tar xfvz /tmp/{{mysql_jdbc_base}}.tar.gz -C /tmp
-  when: features.mysql 
+  when: features.mysql
 
 - name: 'enable  jdbc connector for mysql'
   command: mv /tmp/{{mysql_jdbc_base}}/{{mysql_jdbc_base}}-bin.jar {{artifactory_home}}/tomcat/lib
-  when: features.mysql 
+  when: features.mysql
+
+- name: 'seboolean allow_user_mysql_connect'
+  seboolean: name=allow_user_mysql_connect state=yes persistent=yes
+  when: features.mysql
 
 - name: 'create artifactory database'
-  mysql_db: name=artdb state=present 
+  mysql_db: name=artdb state=present
   when: features.mysql
 
 - name: 'create artifactory database user'
   mysql_user: name={{ artifactory_username }} priv=artdb.*:ALL
-    password={{ artifactory_password }} 
+    password={{ artifactory_password }}
   when: features.mysql
 
 - name: 'create user to run artifactory'
   user: name={{artifactory_username}}
-  
+
 - name: 'create config dir for artifactory'
   file: dest=/etc/opt/jfrog/artifactory state=directory owner=root mode=0755
 

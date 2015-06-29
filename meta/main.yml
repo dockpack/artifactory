@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Bas Meijer
-  description: 
+  description:
   company:
   # Some suggested licenses:
    - BSD (default)
@@ -14,7 +14,7 @@ galaxy_info:
   min_ansible_version: 1.7
   #
   # Below are all platforms currently available. Just uncomment
-  # the ones that apply to your role. If you don't see your 
+  # the ones that apply to your role. If you don't see your
   # platform on this list, let us know and we'll get it added!
   #
   platforms:
@@ -120,8 +120,8 @@ galaxy_info:
   - packaging
   #- system
   - web
-dependencies: 
+dependencies:
   - geerlingguy.java
   - pcextreme.mariadb
 
-  
+

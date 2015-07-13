@@ -1,0 +1,84 @@
+---
+# tasks file for bbaassssiiee.artifactory
+
+- name: 'make sure rpm_dependencies are installed'
+  yum: name={{item}} state=installed
+  when: ansible_os_family == "RedHat"
+  register: installed
+  retries: 3
+  with_items: rpm_dependencies
+
+- name: 'verify java -version'
+  action: shell /usr/bin/java -version
+  register: java
+  changed_when: no
+  tags:
+    - verify
+
+- assert: 
+    that: 
+      - "'java version' in java.stderr" 
+
+# download artifactory http://bit.ly/Hqv9aj
+- name: 'make sure directory exists for artifactory'
+  file: dest=/opt/artifactory state=directory mode=0755
+
+- name: 'verify presence of artifactory'
+  stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"
+  register: jarfile
+
+- name: 'verify presence of artifactory_file'
+  stat: path=/tmp/{{artifactory_file}}
+  register: download
+
+- name: 'download artifactory'
+  get_url: url={{artifactory_url}} dest=/tmp/{{artifactory_file}}
+  retries: 3
+  when: not download.stat.exists
+
+- name: 'unzip artifactory'
+  command: unzip -o  /tmp/{{artifactory_file}} -d /opt/artifactory
+  when: not jarfile.stat.exists
+
+- name: 'verify if an update is needed'
+  shell: "ls -1d /opt/artifactory/artifactory-* | grep -v artifactory-{{artifactory_version}}"
+  ignore_errors: yes
+  register: previous
+
+- name: 'stop artifactory before upgrade'
+  service: name=artifactory state=stopped
+  when: previous.stdout
+
+- name: 'move artifactory data folder'
+  shell: mv {{ previous.stdout }}/data /opt/artifactory/artifactory-{{artifactory_version}}
+  notify: restart artifactory
+  when: previous.stdout
+
+- name: 'remove previous artifactory'
+  file: dest={{ previous.stdout }} state=absent
+  when: previous.stdout
+
+#- name: 'verify presence of artifactory download'
+#  stat: path=/tmp/{{artifactory_file}}
+#  register: artifactory_download
+
+#- name: 'cleanup artifactory download'
+#  file: dest=/tmp/{{artifactory_file}} state=absent
+#  when: artifactory_download.stat.exists
+
+
+- name: 'create user to run artifactory'
+  user: name={{artifactory_username}}
+
+- name: 'create config dir for artifactory'
+  file: dest=/etc/opt/jfrog/artifactory state=directory owner=root mode=0755
+
+- name: 'create configuration file'
+  template: src=etc-opt-jfrog-artifactory-default.j2 dest=/etc/opt/jfrog/artifactory/default
+                owner=root group=root mode=0644
+
+
+- name: 'install artifactory as a service'
+  command: "{{artifactory_home}}/bin/installService.sh {{artifactory_username}}"
+  notify:
+    - 'restart artifactory'

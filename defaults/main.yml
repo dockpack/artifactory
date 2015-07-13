@@ -1,5 +1,6 @@
 ---
 # defaults file for bbaassssiiee.artifactory
+artifactory_version: "3.4.2"
 artifactory_username: "artifactory"
 artifactory_password: "password"
 

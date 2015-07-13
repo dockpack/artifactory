@@ -1,6 +1,4 @@
 ---
-# vars file for bbaassssiiee.artifactory
-artifactory_version: "3.4.2"
 
 rpm_dependencies:
   - 'MySQL-python'

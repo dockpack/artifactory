@@ -1,12 +1,23 @@
 ---
 # tasks file for bbaassssiiee.artifactory
 
-- name: 'make sure rpm_dependencies are installed'
+#- name: 'make sure rpm_dependencies are installed'
   yum: name={{item}} state=installed
   when: ansible_os_family == "RedHat"
   register: installed
   retries: 3
   with_items: rpm_dependencies
+
+- name: 'verify java -version'
+  action: shell /usr/bin/java -version
+  register: java
+  changed_when: no
+  tags:
+    - verify
+
+- assert: 
+    that: 
+      - "'java version' in java.stderr" 
 
 # download artifactory http://bit.ly/Hqv9aj
 - name: 'make sure directory exists for artifactory'

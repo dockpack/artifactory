@@ -121,7 +121,6 @@ galaxy_info:
   #- system
   - web
 dependencies:
-  - geerlingguy.java
   - pcextreme.mariadb
 
 

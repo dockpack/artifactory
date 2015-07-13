@@ -1,7 +1,7 @@
 ---
 # tasks file for bbaassssiiee.artifactory
 
-#- name: 'make sure rpm_dependencies are installed'
+- name: 'make sure rpm_dependencies are installed'
   yum: name={{item}} state=installed
   when: ansible_os_family == "RedHat"
   register: installed

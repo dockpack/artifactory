@@ -1,7 +1,17 @@
 ---
+#- name: fail when artifactory_database is not set
+#  fail: msg=select database in artifactory_database
+#  when: not artifactory_database
+
 # Download & install
 - include: install.yml
 
-# Database configuration
-- include: jdbc.yml
+# Database configuration, one or the other
+- include: postgresql.yml
+  when: features.postgresql == True
+#  when: artifactory_database == 'postgresql'
+
+- include: mysql.yml
+  when: features.mysql == True
+#  when: artifactory_database == 'mysql'
 

@@ -121,6 +121,5 @@ galaxy_info:
   #- system
   - web
 dependencies:
-  - pcextreme.mariadb
 
 

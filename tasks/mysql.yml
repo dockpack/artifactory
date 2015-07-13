@@ -1,0 +1,34 @@
+
+- name: 'make sure rpm_dependencies are installed'
+  yum: name=MySQL-python state=installed
+  when: ansible_os_family == "RedHat"
+  register: installed
+  retries: 3
+
+- name: 'verify presence of jdbc connector for mysql'
+  stat: path={{artifactory_home}}/tomcat/lib/{{mysql_jdbc_base}}-bin.jar
+  register: jdbc_installed
+
+- name: 'download jdbc connector for mysql'
+  get_url: url={{mysql_jdbc_url}} dest=/tmp
+  retries: 3
+#  when: features.mysql and not ant_installed.stat.exists
+
+- name: 'untar jdbc connector for mysql'
+  command: tar xfvz /tmp/{{mysql_jdbc_base}}.tar.gz -C /tmp
+
+- name: 'enable  jdbc connector for mysql'
+  command: mv /tmp/{{mysql_jdbc_base}}/{{mysql_jdbc_base}}-bin.jar {{artifactory_home}}/tomcat/lib
+
+- name: 'seboolean allow_user_mysql_connect'
+  seboolean: name=allow_user_mysql_connect state=yes persistent=yes
+
+- name: 'create artifactory database'
+  mysql_db: name=artdb state=present
+
+- name: 'create artifactory database user'
+  mysql_user: name={{ artifactory_username }} priv=artdb.*:ALL
+    password={{ artifactory_password }}
+
+- name: 'enable mysql driver'
+  template: src=storage_mysql.j2 dest={{artifactory_home}}/etc/storage.properties owner=root group=root mode=0644

@@ -1,12 +1,5 @@
 ---
 
-rpm_dependencies:
-  - 'MySQL-python'
-
-features:
-  mysql: True
-  postgresql: False
-  
 artifactory_url: "https://bintray.com/artifact/download/jfrog/artifactory/artifactory-{{artifactory_version}}.zip"
 artifactory_file: "artifactory-{{artifactory_version}}.zip"
 artifactory_home: "/opt/artifactory/artifactory-{{artifactory_version}}"

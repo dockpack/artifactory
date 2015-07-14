@@ -1,9 +1,8 @@
 ---
 # Select one or the other
-features:
-  mysql: True
-  postgresql: False
-  
+#artifactory_database: postgresql
+artifactory_database: mysql
+
 # defaults file for bbaassssiiee.artifactory
 artifactory_version: "3.4.2"
 artifactory_username: "artifactory"

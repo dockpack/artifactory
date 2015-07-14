@@ -10,6 +10,9 @@ Thi role was built for RedHat systems like RHEL 6, Centos 6. It need Java, and P
 
 Role Variables
 --------------
+artifactory_database can hold either 'mysql' or 'postgresql', you should provide the database yourself now, 
+it is no longer a transitive dependency.
+
 artifactory_password is defined in vars/main/yml, override it in group_vars.
 
 artifactory_version is defined in vars/main.yml

@@ -1,5 +1,5 @@
 
-- name: 'make sure rpm_dependencies are installed'
+- name: 'make sure mysql are installed'
   yum: name=MySQL-python state=installed
   when: ansible_os_family == "RedHat"
   register: installed
@@ -23,10 +23,10 @@
 - name: 'seboolean allow_user_mysql_connect'
   seboolean: name=allow_user_mysql_connect state=yes persistent=yes
 
-- name: 'create artifactory database'
+- name: 'create artifactory database in mysql'
   mysql_db: name=artdb state=present
 
-- name: 'create artifactory database user'
+- name: 'create artifactory database user in mysql'
   mysql_user: name={{ artifactory_username }} priv=artdb.*:ALL
     password={{ artifactory_password }}
 

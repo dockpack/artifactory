@@ -1,4 +1,8 @@
 
+- name: 'make sure rpm_dependencies are installed'
+  yum: name=python-psycopg2 state=installed
+  when: ansible_os_family == "RedHat"
+
 - name: 'create artifactory database'
   postgresql_db: name=artifactory template='template0' encoding='UTF-8'
 

@@ -9,9 +9,9 @@
   tags:
     - verify
 
-- assert: 
-    that: 
-      - "'java version' in java.stderr" 
+- assert:
+    that:
+      - "'java version' in java.stderr"
 
 # download artifactory http://bit.ly/Hqv9aj
 - name: 'make sure directory exists for artifactory'
@@ -59,7 +59,6 @@
 #- name: 'cleanup artifactory download'
 #  file: dest=/tmp/{{artifactory_file}} state=absent
 #  when: artifactory_download.stat.exists
-
 
 - name: 'create user to run artifactory'
   user: name={{artifactory_username}}

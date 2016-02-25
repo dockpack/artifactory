@@ -80,3 +80,6 @@
   command: "{{artifactory_home}}/bin/installService.sh {{artifactory_username}}"
   notify:
     - 'restart artifactory'
+
+- name: 'enable artifactory service'
+  service: name=artifactory enabled=true

@@ -4,6 +4,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: 'create artifactory database user in postgres'
+  become_user: postgres
   postgresql_user: db=artifactory name='{{artifactory_username}}' password='{{artifactory_password}}'
 
 - name: 'create artifactory database in postgres'

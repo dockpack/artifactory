@@ -36,7 +36,8 @@
 
 - name: 'verify if an update is needed'
   shell: "ls -1d /opt/artifactory/artifactory-{{artifactory_license}}-* | grep -v artifactory-{{artifactory_license}}-{{artifactory_version}}"
-  ignore_errors: yes
+  failed_when: false
+  changed_when: false
   register: previous
 
 - name: 'stop artifactory before upgrade'

@@ -35,7 +35,7 @@
   when: not jarfile.stat.exists
 
 - name: 'verify if an update is needed'
-  shell: "ls -1d /opt/artifactory/artifactory-* | grep -v artifactory-{{artifactory_version}}"
+  shell: "ls -1d /opt/artifactory/artifactory-{{artifactory_license}}-* | grep -v artifactory-{{artifactory_license}}-{{artifactory_version}}"
   ignore_errors: yes
   register: previous
 
@@ -44,7 +44,7 @@
   when: previous.stdout
 
 - name: 'move artifactory data folder'
-  shell: mv {{ previous.stdout }}/data /opt/artifactory/artifactory-{{artifactory_version}}
+  shell: mv {{ previous.stdout }}/data /opt/artifactory/artifactory-{{artifactory_license}}-{{artifactory_version}}
   notify: restart artifactory
   when: previous.stdout
 

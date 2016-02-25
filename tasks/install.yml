@@ -70,6 +70,11 @@
   template: src=etc-opt-jfrog-artifactory-default.j2 dest=/etc/opt/jfrog/artifactory/default
                 owner=root group=root mode=0644
 
+- name: 'symlink current version'
+  file:
+    state=link
+    dest=/opt/artifactory/artifactory
+    src=/opt/artifactory/artifactory-{{artifactory_license}}-{{artifactory_version}}
 
 - name: 'install artifactory as a service'
   command: "{{artifactory_home}}/bin/installService.sh {{artifactory_username}}"

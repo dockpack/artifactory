@@ -13,9 +13,8 @@
     that:
       - "'java version' in java.stderr"
 
-# download artifactory http://bit.ly/Hqv9aj
-- name: 'make sure directory exists for artifactory'
-  file: dest=/opt/artifactory state=directory mode=0755
+- name: 'create user to run artifactory'
+  user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/false system=true
 
 - name: 'verify presence of artifactory'
   stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"
@@ -60,9 +59,6 @@
 #- name: 'cleanup artifactory download'
 #  file: dest=/tmp/{{artifactory_file}} state=absent
 #  when: artifactory_download.stat.exists
-
-- name: 'create user to run artifactory'
-  user: name={{artifactory_username}}
 
 - name: 'create config dir for artifactory'
   file: dest=/etc/opt/jfrog/artifactory state=directory owner=root mode=0755

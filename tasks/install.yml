@@ -13,6 +13,9 @@
     that: 
       - "'java version' in java.stderr" 
 
+- name: install prerequesites
+  command: yum install -y openssl
+
 # download artifactory http://bit.ly/Hqv9aj
 - name: 'make sure directory exists for artifactory'
   file: dest=/opt/artifactory state=directory mode=0755
@@ -76,3 +79,9 @@
   command: "{{artifactory_home}}/bin/installService.sh {{artifactory_username}}"
   notify:
     - 'restart artifactory'
+
+- name: 'create deploy script'
+  template: src=deploy-file.sh dest=/usr/local/bin/deploy-file.sh
+                owner=jenkins group=jenkins mode=0700
+
+

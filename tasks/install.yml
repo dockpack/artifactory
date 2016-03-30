@@ -17,7 +17,7 @@
   command: yum install -y openssl
 
 - name: 'create user to run artifactory'
-  user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/false system=true
+  user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/bash system=true
 
 - name: 'verify presence of artifactory'
   stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"
@@ -83,7 +83,7 @@
 
 - name: 'create deploy script'
   template: src=deploy-file.sh dest=/usr/local/bin/deploy-file.sh
-                owner=jenkins group=jenkins mode=0700
+                owner={{ artifactory_user }} group={{ artifactory_user }} mode=0755
 
 - name: 'enable artifactory service'
   service: name=artifactory enabled=true

@@ -3,16 +3,18 @@
   yum: name=python-psycopg2 state=installed
   when: ansible_os_family == "RedHat"
 
-- name: 'create artifactory database in postgres'
-  postgresql_db: name=artifactory template='template0' encoding='UTF-8'
-
 - name: 'create artifactory database user in postgres'
+  become_user: postgres
   postgresql_user: db=artifactory name='{{artifactory_username}}' password='{{artifactory_password}}'
+
+- name: 'create artifactory database in postgres'
+  become_user: postgres
+  postgresql_db: name=artifactory owner=artifactory template='template0' encoding='UTF-8'
 
 - name: 'download jdbc connector for postgres'
   get_url: url={{postgres_jdbc_url}} dest={{artifactory_home}}/tomcat/lib
   register: jdbc_installed
 
 - name: 'enable postgresql driver'
-  template: src=storage_postgresql.j2 dest={{artifactory_home}}/etc/storage.properties owner=root group=root mode=0644
+  template: src=storage_postgresql.j2 dest={{artifactory_home}}/etc/storage.properties owner=artifactory group=artifactory mode=0600
 

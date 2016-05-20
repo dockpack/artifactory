@@ -11,7 +11,7 @@
 
 - assert:
     that:
-      - "'java version' in java.stderr"
+      - "'version' in java.stderr"
 
 - name: install prerequesites
   command: yum install -y openssl

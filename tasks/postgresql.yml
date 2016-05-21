@@ -5,7 +5,7 @@
 
 - name: 'create artifactory database user in postgres'
   become_user: postgres
-  postgresql_user: db=artifactory name='{{artifactory_username}}' password='{{artifactory_password}}'
+  postgresql_user: name='{{artifactory_username}}' password='{{artifactory_password}}'
 
 - name: 'create artifactory database in postgres'
   become_user: postgres

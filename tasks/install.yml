@@ -14,7 +14,7 @@
       - "'java version' in java.stderr"
 
 - name: 'create user to run artifactory'
-  user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/false system=true
+  user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/bash system=true
 
 - name: 'verify presence of artifactory'
   stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"

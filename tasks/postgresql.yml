@@ -1,11 +1,11 @@
 
 - name: 'make sure postgres dependencies are installed'
-  yum: name=python-psycopg2 state=installed
-  when: ansible_os_family == "RedHat"
+  package: name=python-psycopg2 state=installed
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Debian"
 
 - name: 'create artifactory database user in postgres'
   become_user: postgres
-  postgresql_user: db=artifactory name='{{artifactory_username}}' password='{{artifactory_password}}'
+  postgresql_user: name='{{artifactory_username}}' password='{{artifactory_password}}'
 
 - name: 'create artifactory database in postgres'
   become_user: postgres

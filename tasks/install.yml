@@ -44,7 +44,7 @@
     - artifactory
     
 - name: 'unzip artifactory'
-  command: unzip -o  /tmp/{{artifactory_file}} -d /opt/artifactory
+  command: unzip -q -o  /tmp/{{artifactory_file}} -d /opt/artifactory
   when: not jarfile.stat.exists
   tags:
     - artifactory

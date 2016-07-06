@@ -4,7 +4,7 @@
 artifactory_database: mysql
 
 # defaults file for bbaassssiiee.artifactory
-artifactory_version: "4.5.1"
+artifactory_version: "4.9.0"
 artifactory_username: "artifactory"
 artifactory_password: "password"
 

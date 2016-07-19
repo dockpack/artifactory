@@ -26,6 +26,9 @@
     - artifactory
   when: ansible_os_family == "Debian"
 
+- name: ensure all users can traverse /opt
+  file: path=/opt state=directory mode=0777
+
 - name: 'create user to run artifactory'
   user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/bash system=true
   tags:

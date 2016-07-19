@@ -14,11 +14,18 @@
     that:
       - "'version' in java.stderr"
 
-- name: install prerequesites
+- name: yum install prerequesites
   command: yum install -y openssl
   tags:
     - artifactory
-    
+  when: ansible_os_family == "RedHat"
+
+- name: apt install prerequesites
+  apt: name=openssl state=present update_cache=yes
+  tags:
+    - artifactory
+  when: ansible_os_family == "Debian"
+
 - name: 'create user to run artifactory'
   user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/bash system=true
   tags:

@@ -4,8 +4,12 @@
 # Download & install
 - include: install.yml
 
-# Database configuration, one or the other
+# Database configuration, one or another
 - include: postgresql.yml
   when: artifactory_database == 'postgresql'
+
 - include: mysql.yml
   when: artifactory_database == 'mysql'
+
+- include: derby.yml
+  when: artifactory_database == 'derby'

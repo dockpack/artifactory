@@ -1,0 +1,6 @@
+
+    
+- name: 'enable derby driver'
+  template: src=storage_derby.j2 dest={{artifactory_home}}/etc/storage.properties owner={{ artifactory_username }} group={{ artifactory_username }} mode=0600
+  tags:
+    - artifactory

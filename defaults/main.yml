@@ -1,4 +1,8 @@
 ---
+artifactory_url: "https://bintray.com/artifact/download/jfrog/artifactory/jfrog-artifactory-{{artifactory_license}}-{{artifactory_version}}.zip"
+artifactory_file: "artifactory-{{artifactory_version}}.zip"
+artifactory_home: "/opt/artifactory/artifactory-{{artifactory_license}}-{{artifactory_version}}"
+
 # Select one or the other
 #artifactory_database: postgresql
 artifactory_database: mysql

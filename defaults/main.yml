@@ -13,3 +13,8 @@ artifactory_username: "artifactory"
 artifactory_password: "password"
 
 artifactory_license: oss
+
+# You must specify a directory outside of {{ artifactory_home }} if you use derby storage
+# to keep your data when you upgrade artifactory
+artifactory_data_filestore_path: "/opt/artifactory/filestore"
+artifactory_data_derby_path: "/opt/artifactory/derby"

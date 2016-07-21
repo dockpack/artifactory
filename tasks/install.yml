@@ -14,41 +14,51 @@
     that:
       - "'version' in java.stderr"
 
-- name: install prerequesites
+- name: yum install prerequesites
   command: yum install -y openssl
   tags:
     - artifactory
-    
+  when: ansible_os_family == "RedHat"
+
+- name: apt install prerequesites
+  apt: name=openssl state=present update_cache=yes
+  tags:
+    - artifactory
+  when: ansible_os_family == "Debian"
+
+- name: ensure all users can traverse /opt
+  file: path=/opt state=directory mode=0777
+
 - name: 'create user to run artifactory'
   user: name={{artifactory_username}} home=/opt/artifactory/ shell=/bin/bash system=true
   tags:
     - artifactory
-    
+
 - name: 'verify presence of artifactory'
-  stat: path="/opt/artifactory/artifactory-{{artifactory_version}}/webapps/artifactory.war"
+  stat: path="{{ artifactory_home }}/webapps/artifactory.war"
   register: jarfile
   tags:
     - artifactory
-    
+
 - name: 'verify presence of artifactory_file'
   stat: path=/tmp/{{artifactory_file}}
   register: download
   tags:
     - artifactory
-    
+
 - name: 'download artifactory'
   get_url: url={{artifactory_url}} dest=/tmp/{{artifactory_file}}
   retries: 3
   when: not download.stat.exists
   tags:
     - artifactory
-    
+
 - name: 'unzip artifactory'
-  command: unzip -q -o  /tmp/{{artifactory_file}} -d /opt/artifactory
+  command: unzip -q -o  /tmp/{{artifactory_file}} -d /opt/artifactory/
   when: not jarfile.stat.exists
   tags:
     - artifactory
-    
+
 - name: 'verify if an update is needed'
   shell: "ls -1d /opt/artifactory/artifactory-{{artifactory_license}}-* | grep -v artifactory-{{artifactory_license}}-{{artifactory_version}}"
   failed_when: false
@@ -56,26 +66,26 @@
   register: previous
   tags:
     - artifactory
-    
+
 - name: 'stop artifactory before upgrade'
   service: name=artifactory state=stopped
   when: previous.stdout
   tags:
     - artifactory
-    
+
 - name: 'move artifactory data folder'
   shell: mv {{ previous.stdout }}/data /opt/artifactory/artifactory-{{artifactory_license}}-{{artifactory_version}}
   notify: restart artifactory
   when: previous.stdout
   tags:
     - artifactory
-    
+
 - name: 'remove previous artifactory'
   file: dest={{ previous.stdout }} state=absent
   when: previous.stdout
   tags:
     - artifactory
-    
+
 #- name: 'verify presence of artifactory download'
 #  stat: path=/tmp/{{artifactory_file}}
 #  register: artifactory_download
@@ -85,37 +95,38 @@
 #  when: artifactory_download.stat.exists
 
 - name: 'create config dir for artifactory'
-  file: dest=/etc/opt/jfrog/artifactory state=directory owner=root mode=0755
+  file: dest=/etc/opt/jfrog/artifactory state=directory owner={{ artifactory_username }} mode=0755
   tags:
     - artifactory
-    
+
 - name: 'create configuration file'
   template: src=etc-opt-jfrog-artifactory-default.j2 dest=/etc/opt/jfrog/artifactory/default
                 owner=root group=root mode=0644
   tags:
     - artifactory
-    
+
 - name: 'symlink current version'
   file:
     state=link
     dest=/opt/artifactory/artifactory
-    src=/opt/artifactory/artifactory-{{artifactory_license}}-{{artifactory_version}}
+    src={{ artifactory_home }}
+    owner={{ artifactory_username }}
   tags:
     - artifactory
-    
+
 - name: 'install artifactory as a service'
   command: "{{artifactory_home}}/bin/installService.sh {{artifactory_username}}"
   notify:
     - 'restart artifactory'
   tags:
     - artifactory
-    
+
 - name: 'create deploy script'
   template: src=deploy-file.sh dest=/usr/local/bin/deploy-file.sh
                 owner={{ artifactory_username }} group={{ artifactory_username }} mode=0755
   tags:
     - artifactory
-    
+
 - name: 'enable artifactory service'
   service: name=artifactory enabled=true
   tags:

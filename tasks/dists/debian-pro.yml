@@ -1,0 +1,23 @@
+---
+- name: Add jfrog sources
+  template:
+    src: debian/jfrog.list.j2
+    dest: /etc/apt/sources.list.d/jfrog.list
+    mode: 0644
+    owner: root
+    group: root
+  when: ansible_distribution == "Debian"
+
+- name: add jfrog key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 6B219DCCD7639232
+
+- name: Install Artifactory
+  apt:
+    name: 'jfrog-artifactory-pro={{ artifactory_version }}'
+    state: present
+    update_cache: yes
+
+- include: debian-ha.yml
+  when: artifactory_license == "ha"

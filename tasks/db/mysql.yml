@@ -42,8 +42,8 @@
     - artifactory
     
 - name: 'create artifactory database user in mysql'
-  mysql_user: name={{ artifactory_username }} priv=artdb.*:ALL
-    password={{ artifactory_password }}
+  mysql_user: name={{ artifactory_database_username }} priv={{ artifactory_database_name }}.*:ALL
+    password={{ artifactory_database_password }}
   tags:
     - artifactory
     

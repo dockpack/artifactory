@@ -1,8 +1,8 @@
 type=postgresql
 driver=org.postgresql.Driver
-url=jdbc:postgresql://localhost:5432/artifactory
-username={{artifactory_username}}
-password={{artifactory_password}}
+url=jdbc:postgresql://{{artifactory_database_host}}:5432/{{artifactory_database_name}}
+username={{artifactory_database_username}}
+password={{artifactory_database_password}}
 
 ## Determines where the actual artifacts binaries are stored. Available options:
 ## filesystem - binaries are stored in the filesystem (recommended, default)

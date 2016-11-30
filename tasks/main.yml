@@ -1,15 +1,29 @@
 ---
 # features.mysql or features.postgresql should be true
 
-# Download & install
-- include: install.yml
+# Load variables for different platforms
+- name: load distro-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+# RedHat
+- include: dists/redhat.yml
+  when: ansible_os_family == "RedHat"
+
+# Debian: at the moment, only pro support is available for this distro - need to expand this to cover OSS
+- include: dists/debian-pro.yml
+  when: (ansible_distribution == "Debian") and
+        ((artifactory_license == "pro") or (artifactory_license == "ha"))
+
+- include: dists/debian-oss.yml
+  when: (ansible_distribution == "Debian") and
+        (artifactory_license == "oss")
 
 # Database configuration, one or another
-- include: postgresql.yml
+- include: db/postgresql.yml
   when: artifactory_database == 'postgresql'
 
-- include: mysql.yml
+- include: db/mysql.yml
   when: artifactory_database == 'mysql'
 
-- include: derby.yml
+- include: db/derby.yml
   when: artifactory_database == 'derby'

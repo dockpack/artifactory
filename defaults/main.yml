@@ -1,20 +1,25 @@
 ---
+### All these can be overriden in your group and host vars. 
+### defaults
 artifactory_url: "https://bintray.com/artifact/download/jfrog/artifactory/jfrog-artifactory-{{artifactory_license}}-{{artifactory_version}}.zip"
 artifactory_file: "artifactory-{{artifactory_version}}.zip"
-artifactory_home: "/opt/artifactory/artifactory-{{artifactory_license}}-{{artifactory_version}}"
-
-# Select one or the other
-#artifactory_database: postgresql
-artifactory_database: mysql
-
-# defaults file for bbaassssiiee.artifactory
 artifactory_version: "4.9.0"
+### valid license options: oss, pro (ha will be an option, but it's still not done)
+artifactory_license: "oss"
 artifactory_username: "artifactory"
-artifactory_password: "password"
 
-artifactory_license: oss
+### Database (do not forget to change them to suit your needs - I reccomend using ansible-vault to store sensitive data)
+artifactory_database: "postgresql"
+#artifactory_database: mysql
+artifactory_database_location: "local"
+artifactory_database_host: "127.0.0.1"
+artifactory_database_name: "artifactory"
+artifactory_database_username: "artifactory"
+artifactory_database_password: "password"
 
-# You must specify a directory outside of {{ artifactory_home }} if you use derby storage
-# to keep your data when you upgrade artifactory
-artifactory_data_filestore_path: "/opt/artifactory/filestore"
-artifactory_data_derby_path: "/opt/artifactory/derby"
+### JDBC drivers get defined here
+postgres_jdbc_base: "postgresql-9.3-1102.jdbc4.jar"
+mysql_jdbc_base: "mysql-connector-java-5.1.34"
+postgres_jdbc_url: "http://jdbc.postgresql.org/download/{{postgres_jdbc_base}}.jar"
+mysql_jdbc_url: "http://dev.mysql.com/get/Downloads/Connector-J/{{mysql_jdbc_base}}.tar.gz"
+

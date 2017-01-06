@@ -15,13 +15,20 @@
       - "'version' in java.stderr"
 
 - name: yum install prerequesites
-  command: yum install -y openssl
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openssl
+    - unzip
   tags:
     - artifactory
   when: ansible_os_family == "RedHat"
 
 - name: yum install net-tools
-  command: yum install -y net-tools
+  yum:
+    name: net-tools
+    state: present
   tags:
     - artifactory
   when: ansible_os_family == "RedHat"

@@ -121,6 +121,9 @@ galaxy_info:
   - packaging
   #- system
   - web
+
 dependencies:
+  - { role: base_java8 }
+  - { role: base_postgres }
 
 

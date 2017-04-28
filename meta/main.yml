@@ -111,7 +111,7 @@ galaxy_info:
   - web
 
 dependencies:
-  - { role: base_java8 }
-  - { role: base_postgres }
+  - { src: base_java8 }
+  - { src: base_postgres }
 
 

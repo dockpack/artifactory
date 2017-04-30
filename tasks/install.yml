@@ -40,7 +40,7 @@
   apt: name=openssl state=present update_cache=yes
   tags:
     - artifactory
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == 'Debian'
 
 - name: ensure all users can traverse /opt
   file: path=/opt state=directory mode=0777

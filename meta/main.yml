@@ -111,7 +111,7 @@ galaxy_info:
   - web
 
 dependencies:
-  - { src: base_java8 }
-  - { src: base_postgres }
+  - { name: base_java8 }
+  - { name: base_postgres }
 
 

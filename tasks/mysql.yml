@@ -1,7 +1,7 @@
 
 - name: 'make sure mysql are installed'
+  when: ansible_os_family == 'RedHat'
   yum: name=MySQL-python state=installed
-  when: ansible_os_family == "RedHat"
   register: installed
   retries: 3
   tags:

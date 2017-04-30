@@ -16,6 +16,7 @@
       - "'version' in java.stderr"
 
 - name: yum install prerequesites
+  when: ansible_os_family == 'RedHat'
   yum:
     name: "{{ item }}"
     state: present
@@ -24,15 +25,16 @@
     - unzip
   tags:
     - artifactory
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == 'RedHat'
 
 - name: yum install net-tools
+  when: ansible_os_family == 'RedHat'
   yum:
     name: net-tools
     state: present
   tags:
     - artifactory
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == 'RedHat'
 
 - name: apt install prerequesites
   apt: name=openssl state=present update_cache=yes

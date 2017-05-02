@@ -28,6 +28,7 @@
 
 - name: 'seboolean allow_user_mysql_connect'
   seboolean: name=allow_user_mysql_connect state=yes persistent=yes
+  when: ansible_selinux.status == "enabled"
   ignore_errors: yes
   tags:
     - artifactory

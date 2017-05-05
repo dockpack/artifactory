@@ -16,7 +16,6 @@
       - "'version' in java.stderr"
 
 - name: yum install prerequesites
-  when: ansible_os_family == 'RedHat'
   yum:
     name: "{{ item }}"
     state: present
@@ -28,7 +27,6 @@
   when: ansible_os_family == 'RedHat'
 
 - name: yum install net-tools
-  when: ansible_os_family == 'RedHat'
   yum:
     name: net-tools
     state: present

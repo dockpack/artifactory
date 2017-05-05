@@ -108,7 +108,7 @@ galaxy_info:
   #- networking
   #- packaging
   #- system
-  - web
+  #- web
 
 dependencies:
   - { name: bbaassssiiee.base_java8 }

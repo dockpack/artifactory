@@ -7,15 +7,12 @@ galaxy_info:
 
   license: MIT
   min_ansible_version: 1.9
-
   platforms:
     - name: EL
       versions:
         - 6
         - 7
-
   galaxy_tags:
-    - database
     - database:sql
     - development
     - packaging

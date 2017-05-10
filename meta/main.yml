@@ -1,10 +1,12 @@
 
 galaxy_info:
   author: Bas Meijer
-  description:
+  description: JFrog Repository manager
   company:
+
   license: MIT
-  min_ansible_version: 1.7
+  min_ansible_version: 1.9
+
   platforms:
   - name: EL
     versions:
@@ -82,14 +84,14 @@ galaxy_info:
   #  versions:
   #  - all
   #  - any
-  - name: Debian
-    versions:
+  #- name: Debian
+  #  versions:
   #  - all
   #  - etch
   #  - lenny
   #  - squeeze
   #  - wheezy
-      - jessie
+  #  - jessie
   #
   # Below are all categories currently available. Just as with
   # the platforms above, uncomment those that apply to your role.
@@ -103,15 +105,14 @@ galaxy_info:
   #- database
   #- database:nosql
   #- database:sql
-  #- development
+  - development
   #- monitoring
   #- networking
-  #- packaging
+  - packaging
   #- system
   - web
 
 dependencies:
   - { name: bbaassssiiee.base_java8 }
   - { name: bbaassssiiee.base_postgres }
-
 

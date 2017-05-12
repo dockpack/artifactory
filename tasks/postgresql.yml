@@ -1,3 +1,4 @@
+---
 
 - name: 'make sure postgres dependencies are installed'
   package: name=python-psycopg2 state=installed

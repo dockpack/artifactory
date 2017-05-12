@@ -1,6 +1,6 @@
 ---
-# tasks file for bbaassssiiee.artifactory
 
+# tasks file for bbaassssiiee.artifactory
 
 - name: 'check presence of java'
   command: '/usr/bin/java -version'

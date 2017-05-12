@@ -1,3 +1,4 @@
+---
 
 - name: 'make sure mysql are installed'
   when: ansible_os_family == 'RedHat'

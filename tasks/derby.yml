@@ -1,3 +1,5 @@
+---
+
 - name: ensure artifactory_data_filestore_path variable is set
   fail: msg="artifactory_data_filestore_path is required with derby storage strategy"
   when: not artifactory_data_filestore_path

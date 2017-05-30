@@ -32,7 +32,7 @@
 
 - name: ensure storage properties configuration is present with derby driver
   template:
-    src: storage_derby.j2
+    src: storage_derby
     dest: "{{artifactory_home}}/etc/storage.properties"
     owner: "{{ artifactory_username }}"
     group: "{{ artifactory_username }}"

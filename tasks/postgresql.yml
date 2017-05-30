@@ -27,6 +27,6 @@
     - artifactory
 
 - name: 'enable postgresql driver'
-  template: src=storage_postgresql.j2 dest={{artifactory_home}}/etc/storage.properties owner={{ artifactory_username }} mode=0600
+  template: src=storage_postgresql dest={{artifactory_home}}/etc/storage.properties owner={{ artifactory_username }} mode=0600
   tags:
     - artifactory

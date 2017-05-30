@@ -104,7 +104,7 @@
     - artifactory
 
 - name: 'create configuration file'
-  template: src=etc-opt-jfrog-artifactory-default.j2 dest=/etc/opt/jfrog/artifactory/default
+  template: src=etc-opt-jfrog-artifactory-default dest=/etc/opt/jfrog/artifactory/default
                 owner=root group=root mode=0644
   tags:
     - artifactory

@@ -25,7 +25,6 @@
     - unzip
   tags:
     - artifactory
-  when: ansible_os_family == 'RedHat'
 
 - name: yum install net-tools
   when: ansible_os_family == 'RedHat'

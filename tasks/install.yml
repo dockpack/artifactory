@@ -33,7 +33,6 @@
     state: present
   tags:
     - artifactory
-  when: ansible_os_family == 'RedHat'
 
 - name: apt install prerequesites
   apt: name=openssl state=present update_cache=yes

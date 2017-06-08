@@ -103,9 +103,9 @@ galaxy_info:
   #- cloud:gce
   #- cloud:rax
   #- clustering
-  #- database
+  - database
   #- database:nosql
-  #- database:sql
+  - database:sql
   - development
   #- monitoring
   #- networking
@@ -115,5 +115,4 @@ galaxy_info:
 
 dependencies:
   - { name: bbaassssiiee.base_java8 }
-  - { name: bbaassssiiee.base_postgres }
 

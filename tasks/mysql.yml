@@ -1,10 +1,29 @@
 ---
 
-- name: 'make sure mysql are installed'
+- name: 'make sure MySQL-python is installed'
   when: ansible_os_family == 'RedHat'
   yum: name=MySQL-python state=installed
   register: installed
   retries: 3
+  tags:
+    - artifactory
+
+- name: 'create artifactory database in mysql'
+  mysql_db:
+    name: artdb
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags:
+    - artifactory
+
+- name: 'create artifactory database user in mysql'
+  mysql_user:
+    name: "{{ artifactory_username }}"
+    priv: "artdb.*:ALL"
+    password: "{{ artifactory_password }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
   tags:
     - artifactory
 
@@ -34,16 +53,7 @@
   tags:
     - artifactory
 
-- name: 'create artifactory database in mysql'
-  mysql_db: name=artdb state=present
-  tags:
-    - artifactory
 
-- name: 'create artifactory database user in mysql'
-  mysql_user: name={{ artifactory_username }} priv=artdb.*:ALL
-    password={{ artifactory_password }}
-  tags:
-    - artifactory
 
 - name: 'enable mysql driver'
   template: src=storage_mysql dest={{artifactory_home}}/etc/storage.properties owner={{ artifactory_username }} mode=0600

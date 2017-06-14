@@ -53,10 +53,7 @@
   tags:
     - artifactory
 
-
-
 - name: 'enable mysql driver'
   template: src=storage_mysql dest={{artifactory_home}}/etc/storage.properties owner={{ artifactory_username }} mode=0600
   tags:
     - artifactory
-

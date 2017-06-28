@@ -2,7 +2,9 @@
 
 - name: 'make sure MySQL-python is installed'
   when: ansible_os_family == 'RedHat'
-  yum: name=MySQL-python state=installed
+  yum:
+    name: MySQL-python
+    state: installed
   register: installed
   retries: 3
   tags:
@@ -28,32 +30,43 @@
     - artifactory
 
 - name: 'verify presence of jdbc connector for mysql'
-  stat: path={{artifactory_home}}/tomcat/lib/{{mysql_jdbc_base}}-bin.jar
+  stat:
+    path: "{{ artifactory_home }}/tomcat/lib/{{ mysql_jdbc_base }}-bin.jar"
   register: jdbc_installed
   tags:
     - artifactory
 
 - name: 'download jdbc connector for mysql'
-  unarchive: copy=no src={{mysql_jdbc_url}} dest=/tmp validate_certs=no
+  unarchive:
+    copy: no
+    src: "{{ mysql_jdbc_url }}"
+    dest: /tmp
+    validate_certs: no
   retries: 3
   when: not jdbc_installed.stat.exists
   tags:
     - artifactory
 
 - name: 'enable jdbc connector for mysql'
-  command: mv /tmp/{{mysql_jdbc_base}}/{{mysql_jdbc_base}}-bin.jar {{artifactory_home}}/tomcat/lib
+  command: mv /tmp/{{ mysql_jdbc_base }}/{{ mysql_jdbc_base }}-bin.jar {{ artifactory_home }}/tomcat/lib
   when: not jdbc_installed.stat.exists
   tags:
     - artifactory
 
 - name: 'seboolean allow_user_mysql_connect'
-  seboolean: name=allow_user_mysql_connect state=yes persistent=yes
+  seboolean:
+    name: allow_user_mysql_connect
+    state: yes
+    persistent: yes
   when: ansible_selinux.status == "enabled"
   ignore_errors: yes
   tags:
     - artifactory
 
 - name: 'enable mysql driver'
-  template: src=storage_mysql dest={{artifactory_home}}/etc/storage.properties owner={{ artifactory_username }} mode=0600
+  template:
+    src: storage_mysql
+    dest: "{{ artifactory_home }}/etc/storage.properties owner={{ artifactory_username }}"
+    mode: 0600
   tags:
     - artifactory

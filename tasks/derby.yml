@@ -1,13 +1,15 @@
 ---
 
 - name: ensure artifactory_data_filestore_path variable is set
-  fail: msg="artifactory_data_filestore_path is required with derby storage strategy"
+  fail:
+    msg: "artifactory_data_filestore_path is required with derby storage strategy"
   when: not artifactory_data_filestore_path
   tags:
     - artifactory
 
 - name: ensure artifactory_data_derby_path variable is set
-  fail: msg="artifactory_data_derby_path is required with derby storage strategy"
+  fail:
+    msg: "artifactory_data_derby_path is required with derby storage strategy"
   when: not artifactory_data_derby_path
   tags:
     - artifactory
@@ -33,7 +35,7 @@
 - name: ensure storage properties configuration is present with derby driver
   template:
     src: storage_derby
-    dest: "{{artifactory_home}}/etc/storage.properties"
+    dest: "{{ artifactory_home }}/etc/storage.properties"
     owner: "{{ artifactory_username }}"
     group: "{{ artifactory_username }}"
     mode: 0600

@@ -1,0 +1,31 @@
+---
+artifactory:
+  enabled: true
+  running: true
+user:
+  artifactory:
+    exists: true
+    groups:
+    - artifactory
+group:
+  artifactory:
+    exists: true
+file:
+  /opt/artifactory/artifactory:
+    exists: true
+    mode: "0777"
+    owner: artifactory
+    filetype: symlink
+  /opt/artifactory/artifactory/bin/artifactory.sh:
+    exists: true
+    mode: "0755"
+    owner: artifactory
+    filetype: file
+  /etc/opt/jfrog/artifactory/storage.properties:
+    exists: true
+    mode: "0600"
+    owner: artifactory
+    filetype: file
+process:
+  java:
+    running: true

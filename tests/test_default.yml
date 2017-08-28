@@ -1,0 +1,60 @@
+# The goss ansible module is installed with molecule.  The ANSIBLE_LIBRARY
+# path is updated appropriately on `molecule verify`.
+
+# Details about ansible module:
+#  - https://github.com/indusbox/goss-ansible
+
+- name: Testing prerequisites
+  hosts: all
+  gather_facts: yes
+
+  vars_files:
+    - ../defaults/main.yml
+    - ../vars/main.yml
+
+  vars:
+    goss_version: "v0.3.4"
+    goss_sha256sum: "6f0e55fc11d08808e459d727c07470a477d22bb965390588702d0c38be7431c5"
+    goss_url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version }}/goss-linux-amd64"
+
+  tasks:
+    - name: Install ca-certificates
+      apt:
+        name: ca-certificates
+      when: ansible_os_family == 'Debian'
+
+    - name: Download and install goss
+      get_url:
+        url: "{{ goss_url }}"
+        dest: "/usr/bin/goss"
+        checksum: "sha256:{{ goss_sha256sum }}"
+        mode: 0755
+
+    - name: Copy tests to remote
+      template:
+        src: "{{ playbook_dir }}/../tests/goss.yaml"
+        dest: "/tmp/goss.yaml"
+
+- name: Execute goss tests
+  hosts: all
+  gather_facts: no
+
+  vars:
+    goss_results: goss_results
+
+  tasks:
+    - name: Create folder for goss result files
+      file:
+        path: "{{ goss_results }}"
+        state: directory
+        mode: 0700
+
+    - name: Test goss files
+      goss:
+        path: "/tmp/goss.yaml"
+        format: documentation
+        output_file: "{{ goss_results }}/goss.txt"
+
+    - name: Display details about goss results
+      debug:
+        msg: "Goss test results are in folder: {{ goss_results }}"

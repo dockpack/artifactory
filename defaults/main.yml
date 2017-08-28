@@ -11,9 +11,10 @@ artifactory_password: "password"
 artifactory_data_filestore_path: "/opt/artifactory/filestore"
 artifactory_data_derby_path: "/opt/artifactory/derby"
 
-# Select one or the other
+# Select one or the other, postgres is in the test set.
 artifactory_database: postgresql
-#artifactory_database: mysql
+# artifactory_database: mysql
+# mysql_root_password: test_password
 
 artifactory_url: "https://bintray.com/artifact/download/jfrog/artifactory/jfrog-artifactory-{{ artifactory_license }}-{{ artifactory_version }}.zip"
 artifactory_file: "artifactory-{{ artifactory_version }}.zip"

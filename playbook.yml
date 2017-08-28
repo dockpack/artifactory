@@ -1,0 +1,15 @@
+---
+- hosts: all
+
+  vars_files:
+    - defaults/main.yml
+    - vars/main.yml
+
+  vars:
+    - artifactory_database: postgres
+    - base_postgres_user: test_db_user
+    - base_postgres_pass: test_password
+
+  roles:
+    - role: bbaassssiiee.base_postgres
+    - role: artifactory

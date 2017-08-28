@@ -1,0 +1,27 @@
+---
+dependency:
+  name: galaxy
+  requirements_file: requirements.yml
+driver:
+  name: vagrant
+vagrant:
+  platforms:
+    - name: dockpack/centos7
+      box: "dockpack/centos7"
+      # save time in test runs
+      provider_raw_config_args:
+        - vm.synced_folder ".", "/vagrant", disabled: true
+        - vm.config.vbguest.auto_update = false
+        - vm.config.ssh.insert_key = false
+  providers:
+    - name: virtualbox
+      type: virtualbox
+      options:
+        memory: 4096
+        cpus: 2
+  instances:
+    - name: vm
+      ansible_groups:
+        - group1
+verifier:
+  name: goss

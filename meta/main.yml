@@ -22,4 +22,4 @@ galaxy_info:
     - web
 
 dependencies:
-  - bbaassssiiee.base_java8
+  - dockpack.base_java8

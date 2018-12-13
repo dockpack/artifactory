@@ -3,14 +3,11 @@ language: python
 services:
   - docker
 
-before_install:
-  - sudo apt-get -qq update
-
 install:
   - pip install ansible-lint
 
 script:
-  - ansible-lint
+  - ansible-lint playboo.yml
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

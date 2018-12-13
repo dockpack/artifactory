@@ -7,7 +7,7 @@ install:
   - pip install ansible-lint
 
 script:
-  - ansible-lint playboo.yml
+  - ansible-lint playbook.yml
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

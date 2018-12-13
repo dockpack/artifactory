@@ -1,0 +1,5 @@
+# these python extensions are required for testing
+python-vagrant
+yamllint==1.8.1
+molecule==1.25.1
+docker

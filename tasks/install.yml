@@ -122,8 +122,8 @@
   template:
     src: etc-opt-jfrog-artifactory-default
     dest: /etc/opt/jfrog/artifactory/default
-    owner: root
-    group: root
+    owner: "{{ artifactory_username }}"
+    group: "{{ artifactory_username }}"
     mode: 0644
   notify: 'restart artifactory'
   tags:

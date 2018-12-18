@@ -4,20 +4,23 @@
   package:
     name: python-psycopg2
     state: installed
+  retries: 3
   when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
   tags:
-    - artifactory
+    - python
 
 - name: 'create artifactory database user in postgres'
+  when: artifactory_database == 'postgresql'
   become: yes
   become_user: postgres
   postgresql_user:
     name: "{{ artifactory_username }}"
     password: "{{ artifactory_password }}"
   tags:
-    - artifactory
+    - users
 
 - name: 'create artifactory database in postgres'
+  when: artifactory_database == 'postgresql'
   become: yes
   become_user: postgres
   postgresql_db:
@@ -25,22 +28,11 @@
     owner: "{{ artifactory_username }}"
     template: 'template0'
     encoding: 'UTF-8'
-  tags:
-    - artifactory
 
 - name: 'download jdbc connector for postgres'
+  when: artifactory_database == 'postgresql'
   get_url:
     url: "{{ postgres_jdbc_url }}"
     dest: "{{ artifactory_home }}/tomcat/lib"
+  retries: 3
   register: jdbc_installed
-  tags:
-    - artifactory
-
-- name: 'enable postgresql driver'
-  template:
-    src: storage_postgresql
-    dest: "{{ artifactory_home }}/etc/storage.properties"
-    owner: "{{ artifactory_username }}"
-    mode: 0600
-  tags:
-    - artifactory

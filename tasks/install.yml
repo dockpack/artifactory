@@ -15,123 +15,136 @@
     that:
       - "'version' in java.stderr"
 
-- name: yum install prerequesites
+- name: 'yum install prerequisites'
   when: ansible_os_family == 'RedHat'
   yum:
     name: "{{ item }}"
     state: present
+  retries: 3
   with_items:
     - openssl
     - unzip
   tags:
     - artifactory
 
-- name: yum install net-tools
+- name: 'yum install net-tools'
   when: ansible_os_family == 'RedHat'
   yum:
     name: net-tools
     state: present
-  tags:
-    - artifactory
+  retries: 3
 
-- name: apt install prerequesites
-  apt: name=openssl state=present update_cache=yes
-  tags:
-    - artifactory
+- name: 'apt install prerequisites'
   when: ansible_os_family == 'Debian'
+  apt:
+    name: openssl
+    state: present
+    update_cache: yes
+  retries: 3
 
-- name: set permissions on /opt
+- name: 'set permissions on /opt'
   file:
     path: /opt
     state: directory
     mode: 0755
 
 - name: 'create user to run artifactory'
-  user: name={{ artifactory_username }} home=/opt/artifactory/ shell=/bin/bash system=true
+  user:
+    name: "{{ artifactory_username }}"
+    home: /opt/artifactory/
+    shell: /bin/bash
+    system: true
   tags:
-    - artifactory
+    - users
 
 - name: 'verify presence of artifactory'
-  stat: path="{{ artifactory_home }}/webapps/artifactory.war"
+  stat:
+    path: "{{ artifactory_home }}/webapps/artifactory.war"
   register: artifactory_jarfile
-  tags:
-    - artifactory
 
 - name: 'download artifactory'
-  unarchive: copy=no src={{ artifactory_url }} dest=/opt/artifactory/ validate_certs=no
+  unarchive:
+    copy: no
+    src: "{{ artifactory_url }}"
+    dest: /opt/artifactory/
+    validate_certs: no
   retries: 3
   when: not artifactory_jarfile.stat.exists
-  tags:
-    - artifactory
 
 - name: 'verify if an update is needed'
   shell: "ls -1d /opt/artifactory/artifactory-{{ artifactory_license }}-* | grep -v artifactory-{{ artifactory_license }}-{{ artifactory_version }}"
   failed_when: false
   changed_when: false
   register: previous
-  tags:
-    - artifactory
 
 - name: 'stop artifactory before upgrade'
-  service: name=artifactory state=stopped
+  service:
+    name: artifactory
+    state: stopped
   when: previous.stdout
-  tags:
-    - artifactory
+  notify: 'restart artifactory'
 
 - name: 'pkill artifactory to be sure'
   command: pkill -u artifactory
   register: artifactory_pkill
-  changed_when: artifactory_pkill.rc
+  changed_when: no
   ignore_errors: yes
-  tags:
-    - artifactory
 
 - name: 'move artifactory data folder'
   command: mv {{ previous.stdout }}/data /opt/artifactory/artifactory-{{ artifactory_license }}-{{ artifactory_version }}
-  notify: restart artifactory
+  notify: 'restart artifactory'
   when: previous.stdout
-  tags:
-    - artifactory
 
 - name: 'remove previous artifactory'
-  file: dest={{ previous.stdout }} state=absent
+  file:
+    dest: "{{ previous.stdout }}"
+    state: absent
   when: previous.stdout
-  tags:
-    - artifactory
 
 - name: 'create config dir for artifactory'
-  file: dest=/etc/opt/jfrog/artifactory state=directory owner={{ artifactory_username }} mode=0755
+  file:
+    dest: /etc/opt/jfrog/artifactory
+    state: directory
+    owner: "{{ artifactory_username }}"
+    mode: 0755
   tags:
-    - artifactory
+    - config
 
 - name: 'create configuration file'
   template:
     src: etc-opt-jfrog-artifactory-default
-    dest: '/etc/opt/jfrog/artifactory/default'
+    dest: /etc/opt/jfrog/artifactory/default
     owner: root
     group: root
     mode: 0644
+  notify: 'restart artifactory'
   tags:
-    - artifactory
+    - config
 
 - name: 'symlink current version'
   file:
-    state=link
-    dest=/opt/artifactory/artifactory
-    src={{ artifactory_home }}
-    owner={{ artifactory_username }}
+    state: link
+    dest: /opt/artifactory/artifactory
+    src: "{{ artifactory_home }}"
+    owner: "{{ artifactory_username }}"
+  notify: 'restart artifactory'
   tags:
-    - artifactory
+    - config
 
 - name: 'install artifactory as a service'
   command: "{{ artifactory_home }}/bin/installService.sh {{ artifactory_username }}"
   args:
     creates: /etc/init.d/artifactory
-  changed_when: yes
-  notify:
-    - 'restart artifactory'
+  notify: 'restart artifactory'
   tags:
-    - artifactory
+    - init
+
+- name: 'enable artifactory service'
+  service:
+    name: artifactory
+    enabled: true
+  tags:
+    - init
 
 - name: 'create deploy script'
   copy:
@@ -140,10 +153,3 @@
     owner: "{{ artifactory_username }}"
     group: "{{ artifactory_username }}"
     mode: 0755
-  tags:
-    - artifactory
-
-- name: 'enable artifactory service'
-  service: name=artifactory enabled=true
-  tags:
-    - artifactory

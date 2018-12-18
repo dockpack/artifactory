@@ -1,16 +1,44 @@
 ---
 
-# features.mysql or features.postgresql should be true
+- name: 'installing JFrog Artifactory'
+  include: install.yml
 
-# Download & install
-- include: install.yml
+- name: 'setup smoke tests'
+  include: goss.yml
+  tags:
+    - goss
 
-# Database configuration, one or another
-- include: postgresql.yml
+# Storage configuration
+- name: 'ensure storage properties configuration is present'
+  template:
+    src: storage.properties
+    dest: "{{ artifactory_home }}/etc/storage.properties"
+    owner: "{{ artifactory_username }}"
+    group: "{{ artifactory_username }}"
+    mode: 0600
+
+- name: 'configure derby'
+  include: derby.yml
+  tags:
+    - derby
+
+# Database configuration
+- name: 'ensure storage properties configuration is present'
+  template:
+    src: db.properties
+    dest: "{{ artifactory_home }}/etc/db.properties"
+    owner: "{{ artifactory_username }}"
+    group: "{{ artifactory_username }}"
+    mode: 0600
+
+- name: 'configure postgres database'
+  include: postgresql.yml
   when: artifactory_database == 'postgresql'
+  tags:
+    - postgres
 
-- include: mysql.yml
+- name: 'configure mysql database'
+  include: mysql.yml
   when: artifactory_database == 'mysql'
-
-- include: derby.yml
-  when: artifactory_database == 'derby'
+  tags:
+    - mysql

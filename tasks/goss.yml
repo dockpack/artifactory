@@ -1,0 +1,6 @@
+---
+
+- name: 'copy goss tests template'
+  template:
+    src: artifactory_goss.yml
+    dest: /root/artifactory_goss.yml

@@ -6,13 +6,13 @@ driver:
   name: vagrant
 vagrant:
   platforms:
-    - name: dockpack/centos7
-      box: "dockpack/centos7"
+    - name: redesign/centos7
+      box: "redesign/centos7"
       # save time in test runs
-      provider_raw_config_args:
-        - vm.synced_folder ".", "/vagrant", disabled: true
-        - vm.config.vbguest.auto_update = false
-        - vm.config.ssh.insert_key = false
+  raw_config_args:
+    - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    - 'vbguest.auto_update = false'
+    - 'ssh.insert_key = false'
   providers:
     - name: virtualbox
       type: virtualbox
@@ -25,3 +25,19 @@ vagrant:
         - group1
 verifier:
   name: goss
+molecule:
+  test:
+  # sequence of commands to run when performing `molecule test`
+    sequence:
+      - syntax
+      - create
+      - converge
+      - idempotence
+      - verify
+
+  # directories to ignore when doing trailing whitespace checks
+  ignore_paths:
+    - .git
+    - .vagrant
+    - .molecule
+    - .tox

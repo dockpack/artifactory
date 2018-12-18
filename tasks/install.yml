@@ -78,7 +78,8 @@
   when: not artifactory_jarfile.stat.exists
 
 - name: 'verify if an update is needed'
-  shell: "ls -1d /opt/artifactory/artifactory-{{ artifactory_license }}-* | grep -v artifactory-{{ artifactory_license }}-{{ artifactory_version }}"
+  shell: "ls -1d /opt/artifactory/artifactory-{{ artifactory_license }}-* | \
+          grep -v artifactory-{{ artifactory_license }}-{{ artifactory_version }}"
   failed_when: false
   changed_when: false
   register: previous
@@ -97,7 +98,8 @@
   ignore_errors: yes
 
 - name: 'move artifactory data folder'
-  command: mv {{ previous.stdout }}/data /opt/artifactory/artifactory-{{ artifactory_license }}-{{ artifactory_version }}
+  command: "mv {{ previous.stdout }}/data \
+  /opt/artifactory/artifactory-{{ artifactory_license }}-{{ artifactory_version }}"
   notify: 'restart artifactory'
   when: previous.stdout
 

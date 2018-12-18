@@ -5,8 +5,20 @@
   yum:
     name: MySQL-python
     state: installed
-  register: installed
   retries: 3
+  register: result
+  until: result is succeeded
+  tags:
+    - python
+
+- name: 'make sure mysql dependencies are installed'
+  package:
+    name: python-mysqldb
+    state: installed
+  retries: 3
+  register: result
+  until: result is succeeded
+  when: ansible_os_family == 'Debian' and artifactory_database == 'mysql'
   tags:
     - python
 

@@ -1,6 +1,7 @@
 ---
 
-# defaults file for base_artifactory
+# defaults file for bbaassssiiee.artifactory
+
 artifactory_version: "5.2.1"
 artifactory_license: oss
 artifactory_username: "artifactory"
@@ -10,7 +11,7 @@ artifactory_password: "password"
 # to keep your data when you upgrade artifactory
 artifactory_data_filestore_path: "/opt/artifactory/filestore"
 artifactory_data_derby_path: "/opt/artifactory/derby"
-
+artifactory_data_filestore_maxsize: 5GB
 # Select one or the other, postgres is in the test set.
 artifactory_database: postgresql
 # artifactory_database: mysql

@@ -1,40 +1,37 @@
 ---
 
 - name: 'make sure MySQL-python is installed'
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and artifactory_database == 'mysql'
   yum:
     name: MySQL-python
     state: installed
   register: installed
   retries: 3
   tags:
-    - artifactory
+    - python
 
 - name: 'create artifactory database in mysql'
+  when: artifactory_database == 'mysql'
   mysql_db:
     name: artdb
     state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
-  tags:
-    - artifactory
 
 - name: 'create artifactory database user in mysql'
+  when: artifactory_database == 'mysql'
   mysql_user:
     name: "{{ artifactory_username }}"
     priv: "artdb.*:ALL"
     password: "{{ artifactory_password }}"
     login_user: root
     login_password: "{{ mysql_root_password }}"
-  tags:
-    - artifactory
 
 - name: 'verify presence of jdbc connector for mysql'
+  when: artifactory_database == 'mysql'
   stat:
     path: "{{ artifactory_home }}/tomcat/lib/{{ mysql_jdbc_base }}-bin.jar"
   register: jdbc_installed
-  tags:
-    - artifactory
 
 - name: 'download jdbc connector for mysql'
   unarchive:
@@ -43,30 +40,17 @@
     dest: /tmp
     validate_certs: no
   retries: 3
-  when: not jdbc_installed.stat.exists
-  tags:
-    - artifactory
+  when: not jdbc_installed.stat.exists and artifactory_database == 'mysql'
 
 - name: 'enable jdbc connector for mysql'
   command: mv /tmp/{{ mysql_jdbc_base }}/{{ mysql_jdbc_base }}-bin.jar {{ artifactory_home }}/tomcat/lib
-  when: not jdbc_installed.stat.exists
-  tags:
-    - artifactory
+  when: not jdbc_installed.stat.exists and artifactory_database == 'mysql'
+
 
 - name: 'seboolean allow_user_mysql_connect'
   seboolean:
     name: allow_user_mysql_connect
     state: yes
     persistent: yes
-  when: ansible_selinux.status == "enabled"
+  when: ansible_selinux.status == "enabled" and artifactory_database == 'mysql'
   ignore_errors: yes
-  tags:
-    - artifactory
-
-- name: 'enable mysql driver'
-  template:
-    src: storage_mysql
-    dest: "{{ artifactory_home }}/etc/storage.properties owner={{ artifactory_username }}"
-    mode: 0600
-  tags:
-    - artifactory

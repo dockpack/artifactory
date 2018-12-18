@@ -81,7 +81,7 @@
 - name: 'pkill artifactory to be sure'
   command: pkill -u artifactory
   register: artifactory_pkill
-  changed_when: artifactory_pkill.rc
+  changed_when: not artifactory_pkill.rc
   ignore_errors: yes
   tags:
     - artifactory
@@ -127,7 +127,6 @@
   command: "{{ artifactory_home }}/bin/installService.sh {{ artifactory_username }}"
   args:
     creates: /etc/init.d/artifactory
-  changed_when: yes
   notify:
     - 'restart artifactory'
   tags:

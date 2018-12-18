@@ -9,10 +9,10 @@ vagrant:
     - name: redesign/centos7
       box: "redesign/centos7"
       # save time in test runs
-      provider_raw_config_args:
-        - vm.synced_folder ".", "/vagrant", disabled: true
-        - vm.config.vbguest.auto_update = false
-        - vm.config.ssh.insert_key = false
+  raw_config_args:
+    - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    - 'vbguest.auto_update = false'
+    - 'ssh.insert_key = false'
   providers:
     - name: virtualbox
       type: virtualbox

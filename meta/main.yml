@@ -16,7 +16,6 @@ galaxy_info:
 
   galaxy_tags:
     - database
-    - database:sql
     - development
     - packaging
     - web

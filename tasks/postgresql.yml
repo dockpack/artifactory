@@ -5,6 +5,8 @@
     name: python-psycopg2
     state: installed
   retries: 3
+  register: result
+  until: result is succeeded
   when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
   tags:
     - python

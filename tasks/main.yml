@@ -5,6 +5,9 @@
 # Download & install
 - include: install.yml
 
+# setup smoke tests
+- include: goss.yml
+
 # Database configuration, one or another
 - include: postgresql.yml
   when: artifactory_database == 'postgresql'

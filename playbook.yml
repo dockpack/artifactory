@@ -12,4 +12,6 @@
 
   roles:
     - role: bbaassssiiee.base_postgres
+      when: artifactory_database == 'postgresql'
+    - role: dockpack.base_goss
     - role: artifactory

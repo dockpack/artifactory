@@ -7,8 +7,8 @@
 
   vars:
     - artifactory_database: postgres
-    - base_postgres_user: test_db_user
-    - base_postgres_pass: test_password
+    - vault_postgres_user: test_db_user
+    - vault_base_postgres_pass: test_password
 
   roles:
     - role: dockpack.base_postgres

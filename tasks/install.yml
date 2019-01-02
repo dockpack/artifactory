@@ -18,12 +18,11 @@
 - name: 'yum install prerequisites'
   when: ansible_os_family == 'RedHat'
   yum:
-    name: "{{ item }}"
+    name:
+      - openssl
+      - unzip
     state: present
   retries: 3
-  with_items:
-    - openssl
-    - unzip
   register: result
   until: result is succeeded
   tags:
